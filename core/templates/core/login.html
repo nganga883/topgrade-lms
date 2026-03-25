@@ -1,0 +1,43 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - TOPGRADE LMS</title>
+    <link rel="stylesheet" href="{% static 'core/css/login.css' %}">
+</head>
+<body>
+
+<nav class="navbar">
+    <div class="logo">TOPGRADE LMS</div>
+    <ul class="nav-links">
+        <li><a href="/">Home</a></li>
+        <li><a href="/register/">Register</a></li>
+        <li><a href="/login/">Login</a></li>
+    </ul>
+</nav>
+
+<section class="form-section">
+    <h2>Login</h2>
+    {% if message %}
+        <p class="message">{{ message }}</p>
+    {% endif %}
+    <form method="POST" id="loginForm">
+        {% csrf_token %}
+        <label for="email">Email:</label>
+        <input type="email" name="email" id="email" required>
+
+        <label for="password">Password:</label>
+        <div class="password-wrapper">
+            <input type="password" name="password" id="password" required>
+            <span id="togglePassword" class="eye">👁️</span>
+        </div>
+
+        <button type="submit">Login</button>
+    </form>
+</section>
+
+<script src="{% static 'core/js/login.js' %}"></script>
+</body>
+</html>
