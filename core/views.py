@@ -46,7 +46,7 @@ def student_register(request):
 
 
 # -----------------------
-# Login view for students and lecturers only
+# Student Login ONLY
 # -----------------------
 def user_login(request):
     message = ""
@@ -65,30 +65,66 @@ def user_login(request):
             message = "Your account is suspended! Contact admin."
             return render(request, "core/login.html", {"message": message})
 
-        # block admins from custom login page
-        if user.is_superuser or user.is_staff or user.role == "admin":
-            message = "Admins must log in through the admin login page."
+        # ❌ Block lecturers
+        if user.role == "lecturer":
+            message = "Lecturers must use the lecturer login page."
             return render(request, "core/login.html", {"message": message})
 
-        if user.role == "lecturer" and not user.is_staff:
-            message = "Lecturer account not yet added by admin!"
+        # ❌ Block admins
+        if user.is_superuser or user.is_staff or user.role == "admin":
+            message = "Admins must log in through the admin page."
             return render(request, "core/login.html", {"message": message})
 
         user_auth = authenticate(request, username=user.username, password=password)
 
         if user_auth is not None:
             login(request, user_auth)
-
-            if user_auth.role == "student":
-                return redirect("student_dashboard")
-            elif user_auth.role == "lecturer":
-                return redirect("lecturer_dashboard")
-            else:
-                message = "This account cannot use this login page."
+            return redirect("student_dashboard")
         else:
             message = "Incorrect password!"
 
     return render(request, "core/login.html", {"message": message})
+
+
+# -----------------------
+# Lecturer Login (NEW)
+# -----------------------
+def lecturer_login(request):
+    message = ""
+
+    if request.method == "POST":
+        email = request.POST.get("email")
+        password = request.POST.get("password")
+
+        try:
+            user = User.objects.get(email=email)
+        except User.DoesNotExist:
+            message = "Lecturer account not found!"
+            return render(request, "core/lecturer_login.html", {"message": message})
+
+        if user.is_suspended:
+            message = "Your account is suspended! Contact admin."
+            return render(request, "core/lecturer_login.html", {"message": message})
+
+        # ✅ Only lecturers allowed
+        if user.role != "lecturer":
+            message = "This login page is for lecturers only."
+            return render(request, "core/lecturer_login.html", {"message": message})
+
+        # ✅ Must be activated by admin
+        if not user.is_staff:
+            message = "Lecturer not activated by admin."
+            return render(request, "core/lecturer_login.html", {"message": message})
+
+        user_auth = authenticate(request, username=user.username, password=password)
+
+        if user_auth is not None:
+            login(request, user_auth)
+            return redirect("lecturer_dashboard")
+        else:
+            message = "Incorrect password!"
+
+    return render(request, "core/lecturer_login.html", {"message": message})
 
 
 # -----------------------
@@ -110,14 +146,8 @@ def student_dashboard(request):
     context = {
         "num_courses": 5,
         "pending_assignments": 2,
-        "class_schedule": "Mon, Wed, Fri - 10:00 AM to 12:00 PM",
-        "notifications": 3,
-        "announcements": [
-            "Welcome to TOPGRADE LMS!",
-            "Assignment 1 due next week.",
-            "New lecture uploaded for Calculus."
-        ]
     }
+
     return render(request, "core/student_dashboard.html", context)
 
 
@@ -150,7 +180,7 @@ def lecturer_dashboard(request):
 
 
 # -----------------------
-# Custom admin dashboard
+# Admin dashboard
 # -----------------------
 def admin_dashboard(request):
     if not request.user.is_authenticated:
@@ -185,7 +215,7 @@ def manage_users(request):
         if action == "toggle":
             user.is_suspended = not user.is_suspended
             user.save()
-            message = f"{user.username} suspension status updated successfully."
+            message = f"{user.username} status updated."
 
         elif action == "reset_password":
             new_password = request.POST.get("new_password")
@@ -193,8 +223,6 @@ def manage_users(request):
                 user.password = make_password(new_password)
                 user.save()
                 message = f"Password reset for {user.username}"
-            else:
-                message = "Please provide a new password."
 
     return render(request, "core/manage_users.html", {
         "users": users,
@@ -214,6 +242,7 @@ def create_lecturer(request):
         return redirect("/admin/login/?next=/create_lecturer/")
 
     message = ""
+    lecturer_login_link = request.build_absolute_uri("/lecturer-login/")
 
     if request.method == "POST":
         username = request.POST.get("username")
@@ -226,17 +255,19 @@ def create_lecturer(request):
         elif User.objects.filter(email=email).exists():
             message = "Email already exists!"
         else:
-            User.objects.create(
+            User.objects.create_user(
                 username=username,
                 email=email,
-                phone=phone,
-                password=make_password(password),
+                password=password,
                 role="lecturer",
                 is_staff=True
             )
             message = "Lecturer created successfully!"
 
-    return render(request, "core/create_lecturer.html", {"message": message})
+    return render(request, "core/create_lecturer.html", {
+        "message": message,
+        "lecturer_login_link": lecturer_login_link
+    })
 
 
 # -----------------------
@@ -259,7 +290,7 @@ def manage_courses(request):
         code = request.POST.get("code")
         lecturer_id = request.POST.get("lecturer")
 
-        lecturer = get_object_or_404(User, id=lecturer_id, role="lecturer")
+        lecturer = get_object_or_404(User, id=lecturer_id)
         Course.objects.create(name=name, code=code, lecturer=lecturer)
         message = "Course added successfully."
 

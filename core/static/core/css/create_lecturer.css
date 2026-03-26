@@ -10,6 +10,7 @@ body {
     color: #1f2937;
 }
 
+/* Navbar */
 .navbar {
     background: linear-gradient(135deg, #0f172a, #1d4ed8);
     color: white;
@@ -17,7 +18,6 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    flex-wrap: wrap;
 }
 
 .logo {
@@ -25,14 +25,9 @@ body {
     font-weight: bold;
 }
 
-.nav-links {
-    display: flex;
-    gap: 12px;
-    flex-wrap: wrap;
-}
-
 .nav-links a {
     color: white;
+    margin-left: 12px;
     text-decoration: none;
     font-weight: 600;
 }
@@ -43,8 +38,9 @@ body {
     border-radius: 8px;
 }
 
+/* Layout */
 .page-container {
-    width: 94%;
+    width: 90%;
     max-width: 800px;
     margin: 30px auto;
 }
@@ -54,16 +50,10 @@ body {
     padding: 25px;
     border-radius: 14px;
     margin-bottom: 20px;
-    box-shadow: 0 5px 14px rgba(0,0,0,0.07);
 }
 
 .page-header h1 {
     color: #1d4ed8;
-    margin-bottom: 8px;
-}
-
-.page-header p {
-    color: #555;
 }
 
 .message-box {
@@ -75,16 +65,45 @@ body {
     margin-bottom: 15px;
 }
 
+/* Link box */
+.link-box {
+    background: #eff6ff;
+    border-left: 5px solid #2563eb;
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+.link-wrapper {
+    display: flex;
+    gap: 10px;
+}
+
+.link-wrapper input {
+    flex: 1;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #cbd5e1;
+}
+
+.link-wrapper button {
+    background: #2563eb;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.copy-success {
+    background: #16a34a !important;
+}
+
+/* Form */
 .form-card {
     background: white;
     padding: 25px;
     border-radius: 14px;
-    box-shadow: 0 5px 14px rgba(0,0,0,0.07);
-}
-
-.form-card h2 {
-    margin-bottom: 15px;
-    color: #1e3a8a;
 }
 
 .form-group {
@@ -92,21 +111,14 @@ body {
 }
 
 .form-group label {
-    display: block;
-    margin-bottom: 6px;
     font-weight: 600;
 }
 
 .form-group input {
     width: 100%;
     padding: 11px;
-    border: 1px solid #cbd5e1;
     border-radius: 8px;
-}
-
-.form-group input:focus {
-    border-color: #2563eb;
-    outline: none;
+    border: 1px solid #cbd5e1;
 }
 
 .password-wrapper {
@@ -131,17 +143,4 @@ body {
     border: none;
     border-radius: 10px;
     font-weight: bold;
-    cursor: pointer;
-    transition: 0.3s;
-}
-
-.submit-btn:hover {
-    background: #1e40af;
-}
-
-@media (max-width: 768px) {
-    .navbar {
-        flex-direction: column;
-        gap: 10px;
-    }
 }

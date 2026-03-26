@@ -1,28 +1,40 @@
 document.addEventListener("DOMContentLoaded", function () {
 
+    // Toggle password
     const togglePassword = document.getElementById("togglePassword");
     const passwordInput = document.getElementById("password");
 
     if (togglePassword) {
         togglePassword.addEventListener("click", function () {
-            const type = passwordInput.getAttribute("type") === "password" ? "text" : "password";
-            passwordInput.setAttribute("type", type);
+            passwordInput.type =
+                passwordInput.type === "password" ? "text" : "password";
         });
     }
 
+    // Copy link
+    const copyBtn = document.getElementById("copyBtn");
+    const lecturerLink = document.getElementById("lecturerLink");
+
+    if (copyBtn && lecturerLink) {
+        copyBtn.addEventListener("click", function () {
+            navigator.clipboard.writeText(lecturerLink.value);
+
+            copyBtn.textContent = "Copied!";
+            copyBtn.classList.add("copy-success");
+
+            setTimeout(() => {
+                copyBtn.textContent = "Copy";
+                copyBtn.classList.remove("copy-success");
+            }, 2000);
+        });
+    }
+
+    // Validation
     const form = document.getElementById("lecturerForm");
 
     if (form) {
         form.addEventListener("submit", function (e) {
-            const username = form.querySelector('input[name="username"]').value.trim();
-            const email = form.querySelector('input[name="email"]').value.trim();
-            const password = form.querySelector('input[name="password"]').value.trim();
-
-            if (!username || !email || !password) {
-                e.preventDefault();
-                alert("Please fill all required fields.");
-                return;
-            }
+            const password = passwordInput.value;
 
             if (password.length < 6) {
                 e.preventDefault();

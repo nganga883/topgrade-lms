@@ -27,6 +27,9 @@ urlpatterns = [
     path('create_lecturer/', views.create_lecturer, name='create_lecturer'),
     path('manage_courses/', views.manage_courses, name='manage_courses'),
     path('student_courses/', views.student_courses, name='student_courses'),
+
+
+    path('lecturer-login/', views.lecturer_login, name='lecturer_login'),
 ]
 
 # Serve uploaded files
