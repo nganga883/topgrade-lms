@@ -20,17 +20,11 @@
 
 <section class="form-section">
     <h2>Login</h2>
-    <p class="info-text">
-        Students and lecturers log in here. Admins should use the Django admin page.
-    </p>
-
     {% if message %}
         <p class="message">{{ message }}</p>
     {% endif %}
-
     <form method="POST" id="loginForm">
         {% csrf_token %}
-
         <label for="email">Email:</label>
         <input type="email" name="email" id="email" required>
 

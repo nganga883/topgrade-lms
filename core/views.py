@@ -1,8 +1,9 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.hashers import make_password
 from .models import User, Course, Material
+
 
 # -----------------------
 # Landing page
@@ -16,6 +17,7 @@ def home(request):
 # -----------------------
 def student_register(request):
     message = ""
+
     if request.method == "POST":
         username = request.POST.get("username")
         email = request.POST.get("email")
@@ -29,6 +31,8 @@ def student_register(request):
             message = "Passwords do not match!"
         elif User.objects.filter(username=username).exists():
             message = "Username already exists!"
+        elif User.objects.filter(email=email).exists():
+            message = "Email already exists!"
         else:
             User.objects.create_user(
                 username=username,
@@ -36,16 +40,17 @@ def student_register(request):
                 password=password1,
                 role="student"
             )
-            return redirect("/login/")
+            return redirect("login")
 
     return render(request, "core/register.html", {"message": message})
 
 
 # -----------------------
-# Login view
+# Login view for students and lecturers only
 # -----------------------
 def user_login(request):
     message = ""
+
     if request.method == "POST":
         email = request.POST.get("email")
         password = request.POST.get("password")
@@ -60,19 +65,26 @@ def user_login(request):
             message = "Your account is suspended! Contact admin."
             return render(request, "core/login.html", {"message": message})
 
+        # block admins from custom login page
+        if user.is_superuser or user.is_staff or user.role == "admin":
+            message = "Admins must log in through the admin login page."
+            return render(request, "core/login.html", {"message": message})
+
         if user.role == "lecturer" and not user.is_staff:
             message = "Lecturer account not yet added by admin!"
             return render(request, "core/login.html", {"message": message})
 
-        user_auth = authenticate(username=user.username, password=password)
-        if user_auth:
+        user_auth = authenticate(request, username=user.username, password=password)
+
+        if user_auth is not None:
             login(request, user_auth)
-            if user.role == "student":
-                return redirect("/student_dashboard/")
-            elif user.role == "lecturer":
-                return redirect("/lecturer_dashboard/")
-            elif user.role == "admin":
-                return redirect("/admin_dashboard/")
+
+            if user_auth.role == "student":
+                return redirect("student_dashboard")
+            elif user_auth.role == "lecturer":
+                return redirect("lecturer_dashboard")
+            else:
+                message = "This account cannot use this login page."
         else:
             message = "Incorrect password!"
 
@@ -84,7 +96,7 @@ def user_login(request):
 # -----------------------
 def user_logout(request):
     logout(request)
-    return redirect('home')
+    return redirect("home")
 
 
 # -----------------------
@@ -93,7 +105,7 @@ def user_logout(request):
 @login_required
 def student_dashboard(request):
     if request.user.role != "student":
-        return redirect("/login/")
+        return redirect("login")
 
     context = {
         "num_courses": 5,
@@ -115,7 +127,7 @@ def student_dashboard(request):
 @login_required
 def lecturer_dashboard(request):
     if request.user.role != "lecturer":
-        return redirect("/login/")
+        return redirect("login")
 
     message = ""
     courses = Course.objects.filter(lecturer=request.user)
@@ -126,7 +138,7 @@ def lecturer_dashboard(request):
         title = request.POST.get("title")
         file = request.FILES.get("file")
 
-        course = Course.objects.get(id=course_id)
+        course = get_object_or_404(Course, id=course_id, lecturer=request.user)
         Material.objects.create(title=title, file=file, course=course)
         message = "Material uploaded successfully!"
 
@@ -138,86 +150,133 @@ def lecturer_dashboard(request):
 
 
 # -----------------------
-# Admin pages (custom login)
+# Custom admin dashboard
 # -----------------------
-@login_required
 def admin_dashboard(request):
-    if request.user.role != "admin":
-        return redirect("/login/")
-    return render(request, 'core/admin_dashboard.html')
+    if not request.user.is_authenticated:
+        return redirect("/admin/login/?next=/admin_dashboard/")
+
+    if not request.user.is_superuser:
+        logout(request)
+        return redirect("/admin/login/?next=/admin_dashboard/")
+
+    return render(request, "core/admin_dashboard.html")
 
 
-@login_required
+# -----------------------
+# Manage users
+# -----------------------
 def manage_users(request):
-    if request.user.role != "admin":
-        return redirect("/login/")
+    if not request.user.is_authenticated:
+        return redirect("/admin/login/?next=/manage_users/")
+
+    if not request.user.is_superuser:
+        logout(request)
+        return redirect("/admin/login/?next=/manage_users/")
+
     users = User.objects.all()
-    message = ''
+    message = ""
 
     if request.method == "POST":
-        action = request.POST.get('action')
-        user_id = request.POST.get('user_id')
-        user = User.objects.get(id=user_id)
+        action = request.POST.get("action")
+        user_id = request.POST.get("user_id")
+        user = get_object_or_404(User, id=user_id)
 
-        if action == 'toggle':
+        if action == "toggle":
             user.is_suspended = not user.is_suspended
             user.save()
-        elif action == 'reset_password':
-            new_password = request.POST.get('new_password')
-            user.password = make_password(new_password)
-            user.save()
-            message = f"Password reset for {user.username}"
+            message = f"{user.username} suspension status updated successfully."
 
-    return render(request, 'core/manage_users.html', {'users': users, 'message': message})
+        elif action == "reset_password":
+            new_password = request.POST.get("new_password")
+            if new_password:
+                user.password = make_password(new_password)
+                user.save()
+                message = f"Password reset for {user.username}"
+            else:
+                message = "Please provide a new password."
+
+    return render(request, "core/manage_users.html", {
+        "users": users,
+        "message": message
+    })
 
 
-@login_required
+# -----------------------
+# Create lecturer
+# -----------------------
 def create_lecturer(request):
-    if request.user.role != 'admin':
-        return redirect('/login/')   # block non-admins
+    if not request.user.is_authenticated:
+        return redirect("/admin/login/?next=/create_lecturer/")
 
-    message = ''
+    if not request.user.is_superuser:
+        logout(request)
+        return redirect("/admin/login/?next=/create_lecturer/")
+
+    message = ""
+
     if request.method == "POST":
-        username = request.POST.get('username')
-        email = request.POST.get('email')
-        phone = request.POST.get('phone')
-        password = request.POST.get('password')
+        username = request.POST.get("username")
+        email = request.POST.get("email")
+        phone = request.POST.get("phone")
+        password = request.POST.get("password")
 
-        User.objects.create(
-            username=username,
-            email=email,
-            phone=phone,
-            password=make_password(password),
-            role='lecturer',
-            is_staff=True
-        )
-        message = 'Lecturer created successfully!'
+        if User.objects.filter(username=username).exists():
+            message = "Username already exists!"
+        elif User.objects.filter(email=email).exists():
+            message = "Email already exists!"
+        else:
+            User.objects.create(
+                username=username,
+                email=email,
+                phone=phone,
+                password=make_password(password),
+                role="lecturer",
+                is_staff=True
+            )
+            message = "Lecturer created successfully!"
 
-    return render(request, 'core/create_lecturer.html', {'message': message})
+    return render(request, "core/create_lecturer.html", {"message": message})
 
-@login_required
+
+# -----------------------
+# Manage courses
+# -----------------------
 def manage_courses(request):
-    if request.user.role != "admin":
-        return redirect("/login/")
+    if not request.user.is_authenticated:
+        return redirect("/admin/login/?next=/manage_courses/")
+
+    if not request.user.is_superuser:
+        logout(request)
+        return redirect("/admin/login/?next=/manage_courses/")
+
     courses = Course.objects.all()
-    lecturers = User.objects.filter(role='lecturer')
-    message = ''
+    lecturers = User.objects.filter(role="lecturer")
+    message = ""
 
     if request.method == "POST":
-        name = request.POST.get('name')
-        code = request.POST.get('code')
-        lecturer_id = request.POST.get('lecturer')
-        lecturer = User.objects.get(id=lecturer_id)
+        name = request.POST.get("name")
+        code = request.POST.get("code")
+        lecturer_id = request.POST.get("lecturer")
 
+        lecturer = get_object_or_404(User, id=lecturer_id, role="lecturer")
         Course.objects.create(name=name, code=code, lecturer=lecturer)
-        message = 'Course added successfully!'
+        message = "Course added successfully."
 
-    return render(request, 'core/manage_courses.html', {'courses': courses, 'lecturers': lecturers, 'message': message})
-    
+    return render(request, "core/manage_courses.html", {
+        "courses": courses,
+        "lecturers": lecturers,
+        "message": message
+    })
+
+
+# -----------------------
+# Student courses
+# -----------------------
 @login_required
 def student_courses(request):
     if request.user.role != "student":
-        return redirect("/login/")
+        return redirect("login")
 
     courses = Course.objects.all()
     materials = Material.objects.all()
@@ -225,4 +284,4 @@ def student_courses(request):
     return render(request, "core/student_courses.html", {
         "courses": courses,
         "materials": materials
-    })    
+    })

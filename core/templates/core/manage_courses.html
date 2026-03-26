@@ -1,25 +1,123 @@
-<h2>Manage Courses</h2>
-<p>{{ message }}</p>
-<form method="POST">
-    {% csrf_token %}
-    <input type="text" name="name" placeholder="Course Name" required>
-    <input type="text" name="code" placeholder="Course Code" required>
-    <select name="lecturer" required>
-        {% for lecturer in lecturers %}
-        <option value="{{ lecturer.id }}">{{ lecturer.username }}</option>
-        {% endfor %}
-    </select>
-    <button type="submit">Add Course</button>
-</form>
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Courses - TOPGRADE LMS</title>
+    <link rel="stylesheet" href="{% static 'core/css/manage_courses.css' %}">
+</head>
+<body>
 
-<h3>Existing Courses</h3>
-<table border="1">
-<tr><th>Code</th><th>Name</th><th>Lecturer</th></tr>
-{% for course in courses %}
-<tr>
-<td>{{ course.code }}</td>
-<td>{{ course.name }}</td>
-<td>{{ course.lecturer.username }}</td>
-</tr>
-{% endfor %}
-</table>
+    <header class="navbar">
+        <div class="logo">TOPGRADE LMS Admin</div>
+        <div class="nav-links">
+            <a href="{% url 'admin_dashboard' %}">Dashboard</a>
+            <a href="{% url 'logout' %}" class="logout-btn">Log Out</a>
+        </div>
+    </header>
+
+    <main class="page-container">
+        <section class="page-header">
+            <h1>Manage Courses</h1>
+            <p>
+                Add and manage university courses, assign existing lecturers,
+                and organize course details for the eLearning portal.
+            </p>
+        </section>
+
+        {% if message %}
+            <div class="message-box">
+                {{ message }}
+            </div>
+        {% endif %}
+
+        <section class="content-grid">
+            <div class="form-card">
+                <h2>Add New Course</h2>
+
+                <form method="POST" id="courseForm">
+                    {% csrf_token %}
+
+                    <label for="name">Course Name</label>
+                    <input type="text" id="name" name="name" placeholder="e.g Introduction to Programming" required>
+
+                    <label for="code">Course Code</label>
+                    <input type="text" id="code" name="code" placeholder="e.g CSC 110" required>
+
+                    <label for="lecturer">Assign Lecturer</label>
+                    <select id="lecturer" name="lecturer" required>
+                        <option value="">-- Select Existing Lecturer --</option>
+                        {% for lecturer in lecturers %}
+                            <option value="{{ lecturer.id }}">
+                                {{ lecturer.username }}{% if lecturer.email %} - {{ lecturer.email }}{% endif %}
+                            </option>
+                        {% endfor %}
+                    </select>
+
+                    <label for="department">Department</label>
+                    <input type="text" id="department" name="department" placeholder="e.g Computer Science">
+
+                    <label for="semester">Semester</label>
+                    <select id="semester" name="semester">
+                        <option value="">-- Select Semester --</option>
+                        <option value="Semester 1">Semester 1</option>
+                        <option value="Semester 2">Semester 2</option>
+                        <option value="Semester 3">Semester 3</option>
+                    </select>
+
+                    <label for="year_of_study">Year of Study</label>
+                    <select id="year_of_study" name="year_of_study">
+                        <option value="">-- Select Year --</option>
+                        <option value="Year 1">Year 1</option>
+                        <option value="Year 2">Year 2</option>
+                        <option value="Year 3">Year 3</option>
+                        <option value="Year 4">Year 4</option>
+                    </select>
+
+                    <label for="description">Course Description / Content</label>
+                    <textarea id="description" name="description" rows="6" placeholder="Enter course description, topics, objectives, or content outline"></textarea>
+
+                    <button type="submit">Add Course</button>
+                </form>
+            </div>
+
+            <div class="table-card">
+                <div class="table-top">
+                    <h2>Existing Courses</h2>
+                    <input type="text" id="courseSearch" placeholder="Search course by name or code">
+                </div>
+
+                <div class="table-wrapper">
+                    <table id="coursesTable">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Course Name</th>
+                                <th>Course Code</th>
+                                <th>Lecturer</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for course in courses %}
+                                <tr>
+                                    <td>{{ forloop.counter }}</td>
+                                    <td>{{ course.name }}</td>
+                                    <td>{{ course.code }}</td>
+                                    <td>{{ course.lecturer.username }}</td>
+                                </tr>
+                            {% empty %}
+                                <tr>
+                                    <td colspan="4" class="empty-row">No courses added yet.</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script src="{% static 'core/js/manage_courses.js' %}"></script>
+</body>
+</html>

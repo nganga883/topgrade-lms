@@ -9,48 +9,263 @@
 </head>
 <body>
 
-<div class="hero-wrapper">
-    <!-- Navbar -->
-    <nav class="navbar">
-        <div class="logo">TOPGRADE LMS</div>
-        <ul class="nav-links">
-            <li><a href="#">Home</a></li>
-            <li><a href="#">About</a></li>
-            <li><a href="#">Courses</a></li>
-            <li><a href="{% url 'login' %}">Login</a></li>
-            <li><a href="{% url 'student_register' %}">Register</a></li>
-        </ul>
-    </nav>
+    <header class="header">
+        <nav class="navbar">
+            <div class="logo">TOPGRADE LMS</div>
 
-    <!-- Hero Section -->
-    <section class="hero">
-        <h1>Welcome to TOPGRADE LMS</h1>
-        <p>Your University Learning Hub for Students & Lecturers</p>
-        <button onclick="scrollToCourses()">Explore Courses</button>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="#hero">Home</a></li>
+                <li><a href="#announcements">Announcements</a></li>
+                <li><a href="#materials">Materials</a></li>
+                <li><a href="#courses">Courses</a></li>
+                <li><a href="#support">Support</a></li>
+                <li><a href="{% url 'login' %}" class="login-link">Login</a></li>
+                <li><a href="{% url 'student_register' %}" class="register-link">Register</a></li>
+            </ul>
+
+            <div class="menu-toggle" id="menuToggle">&#9776;</div>
+        </nav>
+    </header>
+
+    <section class="hero" id="hero">
+        <div class="hero-content">
+            <div class="hero-text">
+                <span class="hero-badge">University e-Learning Portal</span>
+                <h1>Welcome to TOPGRADE LMS</h1>
+                <p>
+                    A modern university learning platform for students, lecturers, and administrators.
+                    Access course content, view announcements, explore learning materials, and manage
+                    teaching and learning from one place.
+                </p>
+
+                <div class="hero-buttons">
+                    <a href="#materials" class="btn primary-btn">Explore Materials</a>
+                    <a href="{% url 'student_register' %}" class="btn secondary-btn">Get Started</a>
+                </div>
+            </div>
+
+            <div class="hero-panel">
+                <h3>Search Your Courses</h3>
+                <div class="search-box">
+                    <input type="text" id="courseSearchInput" placeholder="Search courses, materials, or units">
+                    <button type="button" id="searchBtn">Search</button>
+                </div>
+
+                <div class="hero-info-grid">
+                    <div class="hero-info-card">
+                        <h4>Learn Anytime</h4>
+                        <p>Study using mobile, tablet, or desktop.</p>
+                    </div>
+                    <div class="hero-info-card">
+                        <h4>Student Guide</h4>
+                        <p>Access guides, help, and learning support resources.</p>
+                    </div>
+                    <div class="hero-info-card">
+                        <h4>Portal Access</h4>
+                        <p>Separate access for students, lecturers, and admin users.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
     </section>
-</div>
 
-<!-- Features Section -->
-<section class="features">
-    <div class="feature">
-        <h2>Upload Materials</h2>
-        <p>Lecturers can upload notes, assignments, and resources easily.</p>
-    </div>
-    <div class="feature">
-        <h2>Access Courses</h2>
-        <p>Students can access all their courses in one place.</p>
-    </div>
-    <div class="feature">
-        <h2>Track Progress</h2>
-        <p>Monitor your learning progress and assignments completion.</p>
-    </div>
-</section>
+    <section class="announcements-section" id="announcements">
+        <div class="section-heading">
+            <h2>Site Announcements</h2>
+            <p>Important updates, notices, and academic reminders for the university community.</p>
+        </div>
 
-<!-- Footer -->
-<footer>
-    <p>&copy; 2026 TOPGRADE LMS. All rights reserved.</p>
-</footer>
+        <div class="announcements-grid">
+            <div class="announcement-card">
+                <span class="tag">Notice</span>
+                <h3>Semester Learning Activities</h3>
+                <p>Course materials, assignments, and lecturer updates are available through the portal.</p>
+            </div>
 
-<script src="{% static 'core/js/home.js' %}"></script>
+            <div class="announcement-card">
+                <span class="tag">Student Guide</span>
+                <h3>e-Learning Orientation</h3>
+                <p>New students can use the student guide and support channels to get started with online learning.</p>
+            </div>
+
+            <div class="announcement-card">
+                <span class="tag">Support</span>
+                <h3>Need Academic Help?</h3>
+                <p>Reach the e-learning support team for assistance with access, learning materials, and portal use.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="materials-section" id="materials">
+        <div class="section-heading">
+            <h2>Educational Materials</h2>
+            <p>Quick access to learning resources commonly found in a university e-learning environment.</p>
+        </div>
+
+        <div class="materials-grid">
+            <div class="material-card">
+                <div class="material-icon">📘</div>
+                <h3>Lecture Notes</h3>
+                <p>Structured lecture notes for core units and guided study sessions.</p>
+                <a href="#">View Notes</a>
+            </div>
+
+            <div class="material-card">
+                <div class="material-icon">📝</div>
+                <h3>Assignments</h3>
+                <p>Coursework, CAT instructions, submission tasks, and marking guides.</p>
+                <a href="#">Open Assignments</a>
+            </div>
+
+            <div class="material-card">
+                <div class="material-icon">📂</div>
+                <h3>Past Papers</h3>
+                <p>Revision materials to support exam preparation and independent study.</p>
+                <a href="#">Browse Papers</a>
+            </div>
+
+            <div class="material-card">
+                <div class="material-icon">🎥</div>
+                <h3>Video Lessons</h3>
+                <p>Recorded lessons and topic-based video explanations for blended learning.</p>
+                <a href="#">Watch Lessons</a>
+            </div>
+
+            <div class="material-card">
+                <div class="material-icon">📚</div>
+                <h3>Reading Resources</h3>
+                <p>Recommended references, handouts, and additional academic reading lists.</p>
+                <a href="#">Open Resources</a>
+            </div>
+
+            <div class="material-card">
+                <div class="material-icon">💡</div>
+                <h3>Study Guides</h3>
+                <p>Learning tips, revision guidance, and support materials for students.</p>
+                <a href="#">Read Guides</a>
+            </div>
+        </div>
+    </section>
+
+    <section class="courses-section" id="courses">
+        <div class="section-heading">
+            <h2>Course Categories</h2>
+            <p>Browse academic areas similar to a real university learning portal.</p>
+        </div>
+
+        <div class="courses-grid">
+            <div class="course-card">
+                <h3>Computer Science</h3>
+                <p>Programming, databases, software engineering, networking, and web technologies.</p>
+            </div>
+
+            <div class="course-card">
+                <h3>Business & Economics</h3>
+                <p>Management, entrepreneurship, accounting, finance, and economic studies.</p>
+            </div>
+
+            <div class="course-card">
+                <h3>Education & Social Sciences</h3>
+                <p>Teaching methods, educational content, humanities, and learner support materials.</p>
+            </div>
+
+            <div class="course-card">
+                <h3>Agriculture & Environment</h3>
+                <p>Modern agriculture, research-based learning, sustainability, and field practice support.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="resources-section">
+        <div class="section-heading">
+            <h2>Useful Student Resources</h2>
+            <p>Helpful links and academic support areas inspired by a university portal setup.</p>
+        </div>
+
+        <div class="resources-grid">
+            <div class="resource-box">
+                <h3>Student Portal</h3>
+                <p>Access student academic information and campus services.</p>
+            </div>
+            <div class="resource-box">
+                <h3>Student Email</h3>
+                <p>Use institutional communication for course and official updates.</p>
+            </div>
+            <div class="resource-box">
+                <h3>Teaching Timetables</h3>
+                <p>Check learning schedules and academic planning information.</p>
+            </div>
+            <div class="resource-box">
+                <h3>Exam Timetables</h3>
+                <p>Stay updated with assessment scheduling and examination planning.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="support-section" id="support">
+        <div class="section-heading">
+            <h2>Support & Contact</h2>
+            <p>Support information modeled after the kind of help sections used on University of Embu’s e-learning and student resource pages. :contentReference[oaicite:1]{index=1}</p>
+        </div>
+
+        <div class="support-grid">
+            <div class="support-card">
+                <h3>e-Learning Support</h3>
+                <p>Get help with login, access issues, assignments, and online learning tools.</p>
+            </div>
+
+            <div class="support-card">
+                <h3>Blended Learning</h3>
+                <p>Support for both online and campus-based digital learning activities.</p>
+            </div>
+
+            <div class="support-card">
+                <h3>Mobile Learning</h3>
+                <p>Access learning content through smartphone, tablet, or computer.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="cta-section">
+        <h2>Start Learning Smarter</h2>
+        <p>
+            Join TOPGRADE LMS to access educational materials, lecturer support,
+            announcements, and organized university learning resources.
+        </p>
+        <div class="cta-buttons">
+            <a href="{% url 'student_register' %}" class="btn primary-btn">Register Now</a>
+            <a href="{% url 'login' %}" class="btn secondary-btn">Login</a>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="footer-grid">
+            <div>
+                <h3>TOPGRADE LMS</h3>
+                <p>Your university learning hub for students, lecturers, and administrators.</p>
+            </div>
+
+            <div>
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="#materials">Educational Materials</a></li>
+                    <li><a href="#courses">Course Categories</a></li>
+                    <li><a href="#support">Support</a></li>
+                </ul>
+            </div>
+
+            <div>
+                <h4>Portal Access</h4>
+                <ul>
+                    <li><a href="{% url 'login' %}">Login</a></li>
+                    <li><a href="{% url 'student_register' %}">Register</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <p class="footer-copy">&copy; 2026 TOPGRADE LMS. All rights reserved.</p>
+    </footer>
+
+    <script src="{% static 'core/js/home.js' %}"></script>
 </body>
 </html>

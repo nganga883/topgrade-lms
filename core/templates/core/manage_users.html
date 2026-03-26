@@ -1,35 +1,106 @@
-<h2>Manage Users</h2>
-<p>{{ message }}</p>
-<table border="1">
-<tr>
-<th>Username</th>
-<th>Email</th>
-<th>Role</th>
-<th>Status</th>
-<th>Actions</th>
-</tr>
-{% for user in users %}
-<tr>
-<td>{{ user.username }}</td>
-<td>{{ user.email }}</td>
-<td>{{ user.role }}</td>
-<td>{% if user.is_suspended %}Suspended{% else %}Active{% endif %}</td>
-<td>
-<form method="POST" style="display:inline;">
-    {% csrf_token %}
-    <input type="hidden" name="user_id" value="{{ user.id }}">
-    <input type="hidden" name="action" value="toggle">
-    <button type="submit">{% if user.is_suspended %}Activate{% else %}Suspend{% endif %}</button>
-</form>
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Users - TOPGRADE LMS</title>
+    <link rel="stylesheet" href="{% static 'core/css/manage_users.css' %}">
+</head>
+<body>
 
-<form method="POST" style="display:inline;">
-    {% csrf_token %}
-    <input type="hidden" name="user_id" value="{{ user.id }}">
-    <input type="hidden" name="action" value="reset_password">
-    <input type="password" name="new_password" placeholder="New password" required>
-    <button type="submit">Reset</button>
-</form>
-</td>
-</tr>
-{% endfor %}
-</table>
+    <header class="navbar">
+        <div class="logo">TOPGRADE LMS Admin</div>
+        <div class="nav-links">
+            <a href="{% url 'admin_dashboard' %}">Dashboard</a>
+            <a href="{% url 'manage_courses' %}">Manage Courses</a>
+            <a href="{% url 'create_lecturer' %}">Create Lecturer</a>
+            <a href="{% url 'logout' %}" class="logout-btn">Log Out</a>
+        </div>
+    </header>
+
+    <main class="page-container">
+        <section class="page-header">
+            <h1>Manage Users</h1>
+            <p>
+                View all users, manage account status, and reset passwords from one place.
+            </p>
+        </section>
+
+        {% if message %}
+            <div class="message-box">
+                {{ message }}
+            </div>
+        {% endif %}
+
+        <section class="table-card">
+            <div class="table-top">
+                <h2>User Records</h2>
+                <input type="text" id="userSearch" placeholder="Search by username, email, or role">
+            </div>
+
+            <div class="table-wrapper">
+                <table id="usersTable">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Username</th>
+                            <th>Email</th>
+                            <th>Role</th>
+                            <th>Status</th>
+                            <th>Account Control</th>
+                            <th>Password Reset</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for user in users %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{ user.username }}</td>
+                            <td>{{ user.email }}</td>
+                            <td>
+                                <span class="role-badge role-{{ user.role|lower }}">
+                                    {{ user.role }}
+                                </span>
+                            </td>
+                            <td>
+                                {% if user.is_suspended %}
+                                    <span class="status-badge suspended">Suspended</span>
+                                {% else %}
+                                    <span class="status-badge active">Active</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <form method="POST" class="inline-form action-form">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="user_id" value="{{ user.id }}">
+                                    <input type="hidden" name="action" value="toggle">
+                                    <button type="submit" class="action-btn {% if user.is_suspended %}activate-btn{% else %}suspend-btn{% endif %}">
+                                        {% if user.is_suspended %}Activate{% else %}Suspend{% endif %}
+                                    </button>
+                                </form>
+                            </td>
+                            <td>
+                                <form method="POST" class="reset-form">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="user_id" value="{{ user.id }}">
+                                    <input type="hidden" name="action" value="reset_password">
+                                    <input type="password" name="new_password" placeholder="New password" required>
+                                    <button type="submit" class="reset-btn">Reset</button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="7" class="empty-row">No users found.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <script src="{% static 'core/js/manage_users.js' %}"></script>
+</body>
+</html>

@@ -1,7 +1,52 @@
-<h1>Admin Dashboard</h1>
-<ul>
-    <li><a href="/manage_users/">Manage Users</a></li>
-    <li><a href="/create_lecturer/">Create Lecturer</a></li>
-    <li><a href="/manage_courses/">Manage Courses</a></li>
-    <li><a href="/logout/">Log Out</a></li>
-</ul>
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - TOPGRADE LMS</title>
+    <link rel="stylesheet" href="{% static 'core/css/admin_dashboard.css' %}">
+</head>
+<body>
+
+    <header class="navbar">
+        <div class="logo">TOPGRADE LMS Admin</div>
+        <div class="nav-right">
+            <span class="admin-name">Welcome, Admin</span>
+            <a href="{% url 'logout' %}" class="logout-btn">Log Out</a>
+        </div>
+    </header>
+
+    <main class="dashboard-container">
+        <section class="hero-section">
+            <h1>Admin Dashboard</h1>
+            <p>Manage users, lecturers, and courses from one place.</p>
+        </section>
+
+        <section class="cards-section">
+            <div class="dashboard-card">
+                <div class="card-icon">👥</div>
+                <h2>Manage Users</h2>
+                <p>View all users, suspend accounts, and reset user passwords.</p>
+                <a href="{% url 'manage_users' %}" class="card-btn">Open</a>
+            </div>
+
+            <div class="dashboard-card">
+                <div class="card-icon">👨‍🏫</div>
+                <h2>Create Lecturer</h2>
+                <p>Add lecturer accounts so they can teach and upload learning materials.</p>
+                <a href="{% url 'create_lecturer' %}" class="card-btn">Open</a>
+            </div>
+
+            <div class="dashboard-card">
+                <div class="card-icon">📚</div>
+                <h2>Manage Courses</h2>
+                <p>Create new courses and assign them to available lecturers.</p>
+                <a href="{% url 'manage_courses' %}" class="card-btn">Open</a>
+            </div>
+        </section>
+    </main>
+
+    <script src="{% static 'core/js/admin_dashboard.js' %}"></script>
+</body>
+</html>
