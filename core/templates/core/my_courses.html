@@ -1,0 +1,14 @@
+<h2>My Courses</h2>
+
+{% for enroll in enrollments %}
+    <h3>{{ enroll.course.name }}</h3>
+
+    {% for mat in enroll.course.materials.all %}
+        <a href="{% url 'download_material' mat.id %}">{{ mat.title }}</a><br>
+    {% endfor %}
+
+    {% for ass in enroll.course.assignments.all %}
+        {{ ass.title }}
+        <a href="{% url 'submit_assignment' ass.id %}">Submit</a><br>
+    {% endfor %}
+{% endfor %}

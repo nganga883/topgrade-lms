@@ -3,6 +3,11 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.hashers import make_password
 from .models import User, Course, Material
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth.decorators import login_required
+from .models import Course, Enrollment, Material, Assignment, Submission
+from django import forms
+from django.http import FileResponse
 
 # -----------------------
 # Landing page
@@ -225,4 +230,122 @@ def student_courses(request):
     return render(request, "core/student_courses.html", {
         "courses": courses,
         "materials": materials
-    })    
+    })  
+
+
+@login_required
+def lecturer_courses(request):
+    if request.user.role != 'lecturer':
+        return redirect('/')
+
+    courses = Course.objects.filter(lecturer=request.user)
+    return render(request, 'core/lecturer_courses.html', {'courses': courses})
+
+class MaterialForm(forms.ModelForm):
+    class Meta:
+        model = Material
+        fields = ['title', 'file']
+
+
+@login_required
+def upload_material(request, course_id):
+    course = get_object_or_404(Course, id=course_id, lecturer=request.user)
+
+    if request.method == 'POST':
+        form = MaterialForm(request.POST, request.FILES)
+        if form.is_valid():
+            obj = form.save(commit=False)
+            obj.course = course
+            obj.save()
+            return redirect('lecturer_courses')
+    else:
+        form = MaterialForm()
+
+    return render(request, 'core/upload_material.html', {'form': form, 'course': course})
+
+@login_required
+def view_submissions(request, assignment_id):
+    assignment = get_object_or_404(Assignment, id=assignment_id)
+
+    if request.user != assignment.course.lecturer:
+        return redirect('/')
+
+    submissions = assignment.submissions.all()
+    return render(request, 'core/view_submissions.html', {'submissions': submissions})
+
+@login_required
+def grade_submission(request, submission_id):
+    submission = get_object_or_404(Submission, id=submission_id)
+
+    if request.user != submission.assignment.course.lecturer:
+        return redirect('/')
+
+    if request.method == 'POST':
+        submission.grade = request.POST.get('grade')
+        submission.save()
+        return redirect('view_submissions', submission.assignment.id)
+
+    return render(request, 'core/grade_submission.html', {'submission': submission})
+
+def course_list(request):
+    query = request.GET.get('q')
+
+    if query:
+        courses = Course.objects.filter(name__icontains=query)
+    else:
+        courses = Course.objects.all()
+
+    return render(request, 'core/course_list.html', {'courses': courses})
+
+
+@login_required
+def enroll_course(request, course_id):
+    if request.user.role != 'student':
+        return redirect('/')
+
+    course = get_object_or_404(Course, id=course_id)
+
+    Enrollment.objects.get_or_create(
+        student=request.user,
+        course=course
+    )
+
+    return redirect('course_list')
+
+
+@login_required
+def my_courses(request):
+    enrollments = Enrollment.objects.filter(student=request.user)
+    return render(request, 'core/my_courses.html', {'enrollments': enrollments})
+
+class SubmissionForm(forms.ModelForm):
+    class Meta:
+        model = Submission
+        fields = ['file']
+
+
+@login_required
+def submit_assignment(request, assignment_id):
+    assignment = get_object_or_404(Assignment, id=assignment_id)
+
+    if request.method == 'POST':
+        form = SubmissionForm(request.POST, request.FILES)
+        if form.is_valid():
+            obj, created = Submission.objects.get_or_create(
+                assignment=assignment,
+                student=request.user
+            )
+            obj.file = form.cleaned_data['file']
+            obj.save()
+            return redirect('my_courses')
+    else:
+        form = SubmissionForm()
+
+    return render(request, 'core/submit_assignment.html', {'form': form, 'assignment': assignment})
+
+def download_material(request, material_id):
+    material = get_object_or_404(Material, id=material_id)
+    return FileResponse(material.file.open('rb'), as_attachment=True)
+
+   
+

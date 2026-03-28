@@ -47,3 +47,24 @@ class Material(models.Model):
 
     def __str__(self):
         return self.title
+    
+
+class Assignment(models.Model):
+    course = models.ForeignKey('Course', on_delete=models.CASCADE, related_name='assignments')
+    title = models.CharField(max_length=200)
+    file = models.FileField(upload_to='assignments/')
+    uploaded_at = models.DateTimeField(auto_now_add=True)
+    due_date = models.DateTimeField(null=True, blank=True)
+
+class Submission(models.Model):
+    assignment = models.ForeignKey(Assignment, on_delete=models.CASCADE, related_name='submissions')
+    student = models.ForeignKey(User, on_delete=models.CASCADE)
+    file = models.FileField(upload_to='submissions/')
+    submitted_at = models.DateTimeField(auto_now_add=True)
+    grade = models.CharField(max_length=10, blank=True, null=True)
+
+    class Meta:
+        unique_together = ('assignment', 'student')     
+
+       
+        

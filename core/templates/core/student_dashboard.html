@@ -29,35 +29,79 @@
     <main class="main-content">
         <h1>Welcome, {{ request.user.username }}</h1>
 
+        {% if messages %}
+            <div class="messages-container">
+                {% for message in messages %}
+                    <div class="message">{{ message }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
         <div class="cards-container">
-            <div class="card">
-                <h3>Courses</h3>
-                <p>{{ num_courses }}</p>
+            <div class="card"><h3>Courses</h3><p>{{ num_courses }}</p></div>
+            <div class="card"><h3>Pending Assignments</h3><p>{{ pending_assignments }}</p></div>
+            <div class="card"><h3>Schedule</h3><p>{{ class_schedule }}</p></div>
+            <div class="card"><h3>Notifications</h3><p>{{ notifications }}</p></div>
+        </div>
+
+        <hr>
+
+        <!-- Courses Section with Tabs -->
+        <div class="course-section">
+            <div class="tab-buttons">
+                <button class="tab-btn active" data-tab="my-courses">My Courses</button>
+                <button class="tab-btn" data-tab="available-courses">Available Courses</button>
             </div>
-            <div class="card">
-                <h3>Pending Assignments</h3>
-                <p>{{ pending_assignments }}</p>
+
+            <!-- My Courses Tab -->
+            <div id="my-courses" class="tab-content active">
+                <div class="course-cards">
+                    {% for course in my_courses %}
+                        <div class="course-card">
+                            <div class="course-title">{{ course.name }}</div>
+                            <div class="materials">
+                                {% for material in materials %}
+                                    {% if material.course.id == course.id %}
+                                        <div class="material-item">
+                                            {{ material.title }}
+                                            <a href="{% url 'download_material' material.id %}">
+                                                <button>Download</button>
+                                            </a>
+                                        </div>
+                                    {% endif %}
+                                {% empty %}
+                                    <div class="material-item">No materials yet</div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    {% empty %}
+                        <p>You have not enrolled in any courses</p>
+                    {% endfor %}
+                </div>
             </div>
-            <div class="card">
-                <h3>Schedule</h3>
-                <p>{{ class_schedule }}</p>
-            </div>
-            <div class="card">
-                <h3>Notifications</h3>
-                <p>{{ notifications }}</p>
+
+            <!-- Available Courses Tab -->
+            <div id="available-courses" class="tab-content">
+                <form method="GET" class="search-form">
+                    <input type="text" name="q" placeholder="Search courses..." value="{{ request.GET.q }}">
+                    <button type="submit">Search</button>
+                </form>
+
+                <div class="course-cards">
+                    {% for course in courses %}
+                        {% if course.id not in enrolled_courses %}
+                            <div class="course-card">
+                                <div class="course-title">{{ course.name }}</div>
+                                <a href="{% url 'enroll_course' course.id %}">
+                                    <button class="enroll-btn">Enroll</button>
+                                </a>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
             </div>
         </div>
 
-        <div class="recent-announcements">
-            <h2>Recent Announcements</h2>
-            <ul>
-                {% for announcement in announcements %}
-                    <li>{{ announcement }}</li>
-                {% empty %}
-                    <li>No announcements yet</li>
-                {% endfor %}
-            </ul>
-        </div>
     </main>
 </div>
 

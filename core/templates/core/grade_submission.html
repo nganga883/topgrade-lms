@@ -1,0 +1,10 @@
+<h1>Grade Submission</h1>
+<p>Student: {{ submission.student.username }}</p>
+<p>Assignment: {{ submission.assignment.title }}</p>
+
+<form method="post">
+  {% csrf_token %}
+  <label>Grade:</label>
+  <input type="text" name="grade" value="{{ submission.grade }}">
+  <button type="submit">Save</button>
+</form>

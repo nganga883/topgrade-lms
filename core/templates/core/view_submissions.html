@@ -1,0 +1,9 @@
+<h2>Submissions</h2>
+
+{% for sub in submissions %}
+    <p>
+        {{ sub.student.username }}
+        <a href="{{ sub.file.url }}">Download</a>
+        <a href="{% url 'grade_submission' sub.id %}">Grade</a>
+    </p>
+{% endfor %}
