@@ -15,11 +15,12 @@
         <div class="logo">TOPGRADE LMS</div>
         <ul class="nav-links">
             <li><a href="#">Dashboard</a></li>
-            <li><a href="#">Courses</a></li>
-            <li><a href="/student_courses/">Courses / Subjects</a></li>
-            <li><a href="#">Attendance</a></li>
+            <li><a href="{% url 'available_courses' %}">Available Courses</a></li>
+            <li><a href="{% url 'my_courses' %}">My Courses</a></li>
+           
+            
             <li><a href="#">Results</a></li>
-            <li><a href="#">Library</a></li>
+           
             <li><a href="#">Profile</a></li>
             <li><a href="/logout/">Logout</a></li>
         </ul>
@@ -81,26 +82,32 @@
             </div>
 
             <!-- Available Courses Tab -->
-            <div id="available-courses" class="tab-content">
-                <form method="GET" class="search-form">
-                    <input type="text" name="q" placeholder="Search courses..." value="{{ request.GET.q }}">
-                    <button type="submit">Search</button>
-                </form>
+           <div id="available-courses" class="tab-content">
+    <form method="GET" class="search-form">
+        <input type="text" name="q" placeholder="Search courses..." value="{{ request.GET.q }}">
+        <button type="submit">Search</button>
+    </form>
 
-                <div class="course-cards">
-                    {% for course in courses %}
-                        {% if course.id not in enrolled_courses %}
-                            <div class="course-card">
-                                <div class="course-title">{{ course.name }}</div>
-                                <a href="{% url 'enroll_course' course.id %}">
-                                    <button class="enroll-btn">Enroll</button>
-                                </a>
-                            </div>
-                        {% endif %}
-                    {% endfor %}
-                </div>
+    <div class="course-cards">
+        {% for course in courses %}
+            <div class="course-card available-course">
+                <div class="course-title">{{ course.name }}</div>
+
+                {% if course.id in enrolled_courses %}
+                    <button class="enroll-btn" disabled style="background-color: gray;">
+                        Enrolled
+                    </button>
+                {% else %}
+                    <a href="{% url 'enroll_course' course.id %}">
+                        <button class="enroll-btn">Enroll</button>
+                    </a>
+                {% endif %}
             </div>
-        </div>
+        {% empty %}
+            <p>No courses found</p>
+        {% endfor %}
+    </div>
+</div>
 
     </main>
 </div>

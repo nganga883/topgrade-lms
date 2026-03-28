@@ -146,25 +146,26 @@ def student_dashboard(request):
 
     query = request.GET.get('q')
 
-    enrolled_courses_qs = Enrollment.objects.filter(student=request.user)
-    enrolled_course_ids = enrolled_courses_qs.values_list('course_id', flat=True)
-
-    # ✅ Only NOT enrolled courses
+    # ✅ ALL courses (DO NOT exclude anymore)
     if query:
-        courses = Course.objects.filter(name__icontains=query).exclude(id__in=enrolled_course_ids)
+        courses = Course.objects.filter(name__icontains=query)
     else:
-        courses = Course.objects.exclude(id__in=enrolled_course_ids)
+        courses = Course.objects.all()
 
-    # ✅ My courses
-    my_courses = Course.objects.filter(id__in=enrolled_course_ids)
+    # ✅ Enrolled courses
+    enrollments = Enrollment.objects.filter(student=request.user)
+    enrolled_ids = enrollments.values_list('course_id', flat=True)
 
-    # ✅ Materials for enrolled courses
+    my_courses = Course.objects.filter(id__in=enrolled_ids)
+
+    # ✅ Materials only for enrolled
     materials = Material.objects.filter(course__in=my_courses)
 
     return render(request, "core/student_dashboard.html", {
-        "courses": courses,
-        "my_courses": my_courses,
+        "courses": courses,          # ALL courses
+        "my_courses": my_courses,    # ONLY enrolled
         "materials": materials,
+        "enrolled_courses": enrolled_ids  # important for UI
     })
 # -----------------------
 # Lecturer dashboard
@@ -324,8 +325,12 @@ def student_courses(request):
     if request.user.role != "student":
         return redirect("login")
 
-    courses = Course.objects.all()
-    materials = Material.objects.all()
+    # ✅ Only enrolled courses
+    enrollments = Enrollment.objects.filter(student=request.user)
+    courses = Course.objects.filter(id__in=enrollments.values_list('course_id', flat=True))
+
+    # ✅ Materials only for enrolled courses
+    materials = Material.objects.filter(course__in=courses)
 
     return render(request, "core/student_courses.html", {
         "courses": courses,
@@ -489,3 +494,40 @@ def submit_assignment(request, assignment_id):
 def download_material(request, material_id):
     material = get_object_or_404(Material, id=material_id)
     return FileResponse(material.file.open('rb'), as_attachment=True)
+
+
+@login_required
+def available_courses(request):
+    if request.user.role != "student":
+        return redirect("login")
+
+    query = request.GET.get('q')
+
+    if query:
+        courses = Course.objects.filter(name__icontains=query)
+    else:
+        courses = Course.objects.all()
+
+    enrolled = Enrollment.objects.filter(student=request.user)
+    enrolled_ids = enrolled.values_list('course_id', flat=True)
+
+    return render(request, "core/available_courses.html", {
+        "courses": courses,
+        "enrolled_courses": enrolled_ids
+    })
+
+
+@login_required
+def my_courses(request):
+    if request.user.role != "student":
+        return redirect("login")
+
+    enrollments = Enrollment.objects.filter(student=request.user)
+    courses = Course.objects.filter(id__in=enrollments.values_list('course_id', flat=True))
+
+    materials = Material.objects.filter(course__in=courses)
+
+    return render(request, "core/my_courses.html", {
+        "courses": courses,
+        "materials": materials
+    })  
