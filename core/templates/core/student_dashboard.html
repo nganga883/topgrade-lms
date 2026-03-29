@@ -14,104 +14,135 @@
     <aside class="sidebar">
         <div class="logo">TOPGRADE LMS</div>
         <ul class="nav-links">
-            <li><a href="#">Dashboard</a></li>
-            <li><a href="{% url 'available_courses' %}">Available Courses</a></li>
-            <li><a href="{% url 'my_courses' %}">My Courses</a></li>
-           
-            
-            <li><a href="#">Results</a></li>
-           
-            <li><a href="#">Profile</a></li>
+            <li><a href="#" class="nav-link active" data-section="dashboard">Dashboard</a></li>
+            <li><a href="#" class="nav-link" data-section="available-courses">Available Courses</a></li>
+            <li><a href="#" class="nav-link" data-section="my-courses">My Courses</a></li>
+            <li><a href="#" class="nav-link" data-section="assignments">Assignments</a></li>
+            <li><a href="#" class="nav-link" data-section="results">Results</a></li>
+            <li><a href="#" class="nav-link" data-section="profile">Profile</a></li>
             <li><a href="/logout/">Logout</a></li>
         </ul>
     </aside>
 
     <!-- Main Content -->
     <main class="main-content">
-        <h1>Welcome, {{ request.user.username }}</h1>
+        <section id="dashboard" class="content-section active">
+            <h1>Welcome, {{ request.user.username }}</h1>
 
-        {% if messages %}
-            <div class="messages-container">
-                {% for message in messages %}
-                    <div class="message">{{ message }}</div>
-                {% endfor %}
-            </div>
-        {% endif %}
-
-        <div class="cards-container">
-            <div class="card"><h3>Courses</h3><p>{{ num_courses }}</p></div>
-            <div class="card"><h3>Pending Assignments</h3><p>{{ pending_assignments }}</p></div>
-            <div class="card"><h3>Schedule</h3><p>{{ class_schedule }}</p></div>
-            
-        </div>
-
-        <hr>
-
-        <!-- Courses Section with Tabs -->
-        <div class="course-section">
-            <div class="tab-buttons">
-                <button class="tab-btn active" data-tab="my-courses">My Courses</button>
-                <button class="tab-btn" data-tab="available-courses">Available Courses</button>
-            </div>
-
-            <!-- My Courses Tab -->
-            <div id="my-courses" class="tab-content active">
-                <div class="course-cards">
-                    {% for course in my_courses %}
-                        <div class="course-card">
-                            <div class="course-title">{{ course.name }}</div>
-                            <div class="materials">
-                                {% for material in materials %}
-                                    {% if material.course.id == course.id %}
-                                        <div class="material-item">
-                                            {{ material.title }}
-                                            <a href="{% url 'download_material' material.id %}">
-                                                <button>Download</button>
-                                            </a>
-                                        </div>
-                                    {% endif %}
-                                {% empty %}
-                                    <div class="material-item">No materials yet</div>
-                                {% endfor %}
-                            </div>
-                        </div>
-                    {% empty %}
-                        <p>You have not enrolled in any courses</p>
+            {% if messages %}
+                <div class="messages-container">
+                    {% for message in messages %}
+                        <div class="message">{{ message }}</div>
                     {% endfor %}
                 </div>
+            {% endif %}
+        </section>
+
+        <section id="profile" class="content-section">
+            <h2>My Profile</h2>
+            <div class="profile-card">
+                <div class="profile-row"><strong>Username:</strong> {{ request.user.username }}</div>
+                <div class="profile-row"><strong>Email:</strong> {{ request.user.email }}</div>
             </div>
+        </section>
 
-            <!-- Available Courses Tab -->
-           <div id="available-courses" class="tab-content">
-    <form method="GET" class="search-form">
-        <input type="text" name="q" placeholder="Search courses..." value="{{ request.GET.q }}">
-        <button type="submit">Search</button>
-    </form>
-
-    <div class="course-cards">
-        {% for course in courses %}
-            <div class="course-card available-course">
-                <div class="course-title">{{ course.name }}</div>
-
-                {% if course.id in enrolled_courses %}
-                    <button class="enroll-btn" disabled style="background-color: gray;">
-                        Enrolled
-                    </button>
-                {% else %}
-                    <a href="{% url 'enroll_course' course.id %}">
-                        <button class="enroll-btn">Enroll</button>
-                    </a>
-                {% endif %}
+        <section id="my-courses" class="content-section">
+            <h2>My Courses</h2>
+            <div class="course-cards">
+                {% for course in my_courses %}
+                    <div class="course-card">
+                        <div class="course-title">{{ course.name }}</div>
+                        <div class="materials">
+                            {% for material in materials %}
+                                {% if material.course.id == course.id %}
+                                    <div class="material-item">
+                                        {{ material.title }}
+                                        <a href="{% url 'download_material' material.id %}">
+                                            <button>Download</button>
+                                        </a>
+                                    </div>
+                                {% endif %}
+                            {% empty %}
+                                <div class="material-item">No materials yet</div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% empty %}
+                    <p>You have not enrolled in any courses</p>
+                {% endfor %}
             </div>
-        {% empty %}
-            <p>No courses found</p>
-        {% endfor %}
-    </div>
-</div>
+        </section>
+
+        <section id="available-courses" class="content-section">
+            <h2>Available Courses</h2>
+            <form method="GET" class="search-form">
+                <input type="text" name="q" placeholder="Search courses..." value="{{ request.GET.q }}">
+                <button type="submit">Search</button>
+            </form>
+
+            <div class="course-cards">
+                {% for course in courses %}
+                    <div class="course-card available-course">
+                        <div class="course-title">{{ course.name }}</div>
+
+                        {% if course.id in enrolled_courses %}
+                            <button class="enroll-btn" disabled style="background-color: gray;">
+                                Enrolled
+                            </button>
+                        {% else %}
+                            <a href="{% url 'enroll_course' course.id %}">
+                                <button class="enroll-btn">Enroll</button>
+                            </a>
+                        {% endif %}
+                    </div>
+                {% empty %}
+                    <p>No courses found</p>
+                {% endfor %}
+            </div>
+        </section>
+
+        <section id="assignments" class="content-section">
+            <h2>Assignments</h2>
+            <div class="assignment-list">
+                <ul>
+                    {% for row in assignment_rows %}
+                        {% with assignment=row.assignment submission=row.submission status=row.status %}
+                        <li>
+                            <div>
+                                <strong>{{ assignment.title }}</strong>
+                                <span class="muted">({{ assignment.course.name }})</span>
+                                {% if assignment.due_date %}
+                                    <span class="due-date">Due: {{ assignment.due_date|date:"M d, Y" }}</span>
+                                {% endif %}
+                            </div>
+                            <div class="assignment-actions">
+                                <a href="{{ assignment.file.url }}" download>Download</a>
+                                <a href="{% url 'submit_assignment' assignment.id %}">Submit</a>
+                                {% if status == "submitted" %}
+                                    <span class="submitted-badge">Submitted{% if submission.grade %} (Grade: {{ submission.grade }}){% endif %}</span>
+                                {% elif status == "late" %}
+                                    <span class="late-badge">Late</span>
+                                {% else %}
+                                    <span class="pending-badge">Not Submitted</span>
+                                {% endif %}
+                            </div>
+                        </li>
+                        {% endwith %}
+                    {% empty %}
+                        <li>No assignments yet</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </section>
+
+        <section id="results" class="content-section">
+            <h2>Results</h2>
+            <p>Results will appear here when available.</p>
+        </section>
 
     </main>
 </div>
 
-<script src="{% static 'core/js/student_dashboard.js' %}"></script>
+<script src="{% static 'core/js/student-dashboard.js' %}"></script>
 </body>
 </html>

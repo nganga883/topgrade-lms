@@ -3,6 +3,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.hashers import make_password
 from .models import User, Course, Material, Assignment, Submission, Enrollment
+from django.utils import timezone
 
 
 
@@ -10,7 +11,13 @@ from .models import User, Course, Material, Assignment, Submission, Enrollment
 # Landing page
 # -----------------------
 def home(request):
-    return render(request, 'core/home.html')
+    query = request.GET.get('q', '').strip()
+    courses = Course.objects.filter(name__icontains=query) if query else Course.objects.none()
+
+    return render(request, 'core/home.html', {
+        'courses': courses,
+        'query': query,
+    })
 
 
 # -----------------------
@@ -139,7 +146,7 @@ def user_logout(request):
 # -----------------------
 # Student dashboard
 # -----------------------
-@login_required
+login_required
 def student_dashboard(request):
     if request.user.role != "student":
         return redirect("login")
@@ -161,11 +168,34 @@ def student_dashboard(request):
     # ✅ Materials only for enrolled
     materials = Material.objects.filter(course__in=my_courses)
 
+    # ✅ Assignments for enrolled courses
+    assignments = Assignment.objects.filter(course__in=my_courses).order_by('-uploaded_at')
+    submissions = Submission.objects.filter(student=request.user, assignment__in=assignments)
+    submissions_map = {s.assignment_id: s for s in submissions}
+    now = timezone.now()
+    assignment_rows = []
+    for a in assignments:
+        sub = submissions_map.get(a.id)
+        if sub:
+            status = "submitted"
+        elif a.due_date and a.due_date < now:
+            status = "late"
+        else:
+            status = "pending"
+        assignment_rows.append({
+            "assignment": a,
+            "submission": sub,
+            "status": status
+        })
+
     return render(request, "core/student_dashboard.html", {
         "courses": courses,          # ALL courses
         "my_courses": my_courses,    # ONLY enrolled
         "materials": materials,
-        "enrolled_courses": enrolled_ids  # important for UI
+        "enrolled_courses": enrolled_ids,  # important for UI
+        "assignments": assignments,
+        "submissions": submissions,
+        "assignment_rows": assignment_rows
     })
 # -----------------------
 # Lecturer dashboard
@@ -178,19 +208,32 @@ def lecturer_dashboard(request):
     message = ""
     courses = Course.objects.filter(lecturer=request.user)
     materials = Material.objects.filter(course__lecturer=request.user)
+    assignments = Assignment.objects.filter(course__lecturer=request.user).order_by('-uploaded_at')
 
     if request.method == "POST":
-        course_id = request.POST.get("course")
-        title = request.POST.get("title")
-        file = request.FILES.get("file")
+        form_type = request.POST.get("form_type")
+        if form_type == "material":
+            course_id = request.POST.get("course")
+            title = request.POST.get("title")
+            file = request.FILES.get("file")
 
-        course = get_object_or_404(Course, id=course_id, lecturer=request.user)
-        Material.objects.create(title=title, file=file, course=course)
-        message = "Material uploaded successfully!"
+            course = get_object_or_404(Course, id=course_id, lecturer=request.user)
+            Material.objects.create(title=title, file=file, course=course)
+            message = "Material uploaded successfully!"
+        elif form_type == "assignment":
+            course_id = request.POST.get("course")
+            title = request.POST.get("title")
+            file = request.FILES.get("file")
+            due_date = request.POST.get("due_date") or None
+
+            course = get_object_or_404(Course, id=course_id, lecturer=request.user)
+            Assignment.objects.create(title=title, file=file, course=course, due_date=due_date)
+            message = "Assignment uploaded successfully!"
 
     return render(request, "core/lecturer_dashboard.html", {
         "courses": courses,
         "materials": materials,
+        "assignments": assignments,
         "message": message
     })
 

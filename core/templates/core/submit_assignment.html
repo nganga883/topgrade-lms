@@ -1,7 +1,26 @@
-<h3>{{ assignment.title }}</h3>
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Submit Assignment</title>
+    <link rel="stylesheet" href="{% static 'core/css/submit_assignment.css' %}">
+</head>
+<body>
+    <div class="submit-wrapper">
+        <div class="submit-card">
+            <h3>{{ assignment.title }}</h3>
+            <p class="subtitle">Upload your completed work for grading.</p>
 
-<form method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button>Submit</button>
-</form>
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="form-group">
+                    {{ form.as_p }}
+                </div>
+                <button type="submit">Submit Assignment</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

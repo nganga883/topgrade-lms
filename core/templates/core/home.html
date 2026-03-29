@@ -7,7 +7,7 @@
     <title>TOPGRADE LMS</title>
     <link rel="stylesheet" href="{% static 'core/css/home.css' %}">
 </head>
-<body>
+<body style="background-image: linear-gradient(135deg, rgba(15, 23, 42, 0.75), rgba(30, 58, 138, 0.7), rgba(37, 99, 235, 0.65)), url('{% static 'core/img/students-library.jpg' %}'); background-size: cover; background-position: center; background-repeat: no-repeat; background-attachment: fixed;">
 
     <header class="header">
         <nav class="navbar">
@@ -46,10 +46,32 @@
 
             <div class="hero-panel">
                 <h3>Search Your Courses</h3>
-                <div class="search-box">
-                    <input type="text" id="courseSearchInput" placeholder="Search courses, materials, or units">
-                    <button type="button" id="searchBtn">Search</button>
-                </div>
+                <form method="GET" action="{% url 'home' %}" class="search-box">
+                    <input type="text" id="courseSearchInput" name="q" placeholder="Search courses..." value="{{ query|default:'' }}">
+                    <button type="submit" id="searchBtn">Search</button>
+                </form>
+
+                {% if query %}
+                    <div class="search-results">
+                        <h4>Search Results</h4>
+                        {% if courses %}
+                            <ul>
+                                {% for course in courses %}
+                                    <li>
+                                        <span>{{ course.name }}</span>
+                                        {% if request.user.is_authenticated and request.user.role == "student" %}
+                                            <a class="enroll-link" href="{% url 'enroll_course' course.id %}">Enroll</a>
+                                        {% else %}
+                                            <a class="enroll-link disabled" href="{% url 'login' %}">Login to Enroll</a>
+                                        {% endif %}
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        {% else %}
+                            <p class="no-results">No courses found.</p>
+                        {% endif %}
+                    </div>
+                {% endif %}
 
                 <div class="hero-info-grid">
                     <div class="hero-info-card">
@@ -72,7 +94,7 @@
     <section class="announcements-section" id="announcements">
         <div class="section-heading">
             <h2>Site Announcements</h2>
-            <p>Important updates, notices, and academic reminders for the university community.</p>
+            
         </div>
 
         <div class="announcements-grid">
@@ -99,7 +121,7 @@
     <section class="materials-section" id="materials">
         <div class="section-heading">
             <h2>Educational Materials</h2>
-            <p>Quick access to learning resources commonly found in a university e-learning environment.</p>
+            
         </div>
 
         <div class="materials-grid">
@@ -150,7 +172,7 @@
     <section class="courses-section" id="courses">
         <div class="section-heading">
             <h2>Course Categories</h2>
-            <p>Browse academic areas similar to a real university learning portal.</p>
+        
         </div>
 
         <div class="courses-grid">
@@ -179,7 +201,7 @@
     <section class="resources-section">
         <div class="section-heading">
             <h2>Useful Student Resources</h2>
-            <p>Helpful links and academic support areas inspired by a university portal setup.</p>
+            
         </div>
 
         <div class="resources-grid">
@@ -205,13 +227,16 @@
     <section class="support-section" id="support">
         <div class="section-heading">
             <h2>Support & Contact</h2>
-            <p>Support information modeled after the kind of help sections used on University of Embu’s e-learning and student resource pages. :contentReference[oaicite:1]{index=1}</p>
+            
         </div>
 
         <div class="support-grid">
             <div class="support-card">
                 <h3>e-Learning Support</h3>
                 <p>Get help with login, access issues, assignments, and online learning tools.</p>
+                <p class="support-email">Email: <a href="mailto:admin@topgradelms.edu">admin@topgradelms.edu</a></p>
+                <p class="support-phone">Admin Office: <a href="tel:+254700123456">+254 700 123 456</a></p>
+                <p class="support-phone">Registration Office: <a href="tel:+254700654321">+254 700 654 321</a></p>
             </div>
 
             <div class="support-card">
@@ -222,6 +247,45 @@
             <div class="support-card">
                 <h3>Mobile Learning</h3>
                 <p>Access learning content through smartphone, tablet, or computer.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="faq-section" id="faq">
+        <div class="section-heading">
+            <h2>Frequently Asked Questions</h2>
+        </div>
+
+        <div class="faq-list">
+            <div class="faq-item">
+                <button class="faq-question">How do I enroll in a course?</button>
+                <div class="faq-answer">
+                    <p>Log in as a student, search for a course, and click Enroll. You must be logged in to enroll.</p>
+                </div>
+            </div>
+            <div class="faq-item">
+                <button class="faq-question">Where do I find assignments?</button>
+                <div class="faq-answer">
+                    <p>Open your student dashboard and click the Assignments tab to view, download, and submit work.</p>
+                </div>
+            </div>
+            <div class="faq-item">
+                <button class="faq-question">How do lecturers upload notes?</button>
+                <div class="faq-answer">
+                    <p>Lecturers use the Upload Notes section in their dashboard to publish materials to students.</p>
+                </div>
+            </div>
+            <div class="faq-item">
+                <button class="faq-question">Can I submit an assignment after the due date?</button>
+                <div class="faq-answer">
+                    <p>You can still submit, but your status will show as late if the due date has passed.</p>
+                </div>
+            </div>
+            <div class="faq-item">
+                <button class="faq-question">Who do I contact for support?</button>
+                <div class="faq-answer">
+                    <p>Use the support email and phone numbers in the Support section for quick help.</p>
+                </div>
             </div>
         </div>
     </section>
