@@ -141,3 +141,9 @@ MEDIA_ROOT = BASE_DIR / 'media'
 # Tell Django where the login page actually is
 LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = '/admin_dashboard/'  # or whatever makes sense after login
+
+STATIC_URL = '/static/'
+STATIC_ROOT = BASE_DIR / "staticfiles"
+STATICFILES_DIRS = [
+    BASE_DIR /"core/static",
+]
