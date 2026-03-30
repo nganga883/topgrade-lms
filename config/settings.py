@@ -30,7 +30,7 @@ ALLOWED_HOSTS = [
 ]
 
 CSRF_TRUSTED_ORIGINS = [
-    "https://topgrade-lms-1.onrender.com"
+    "htopgrade-lms-production.up.railway.app",
 ]
 
 
