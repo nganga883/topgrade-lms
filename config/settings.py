@@ -25,10 +25,14 @@ SECRET_KEY = 'django-insecure-2re@)u1*$()*dmnaynlvcr@1*ta!$&416xun*x%%a&!&qy8&bu
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = [] [
+ALLOWED_HOSTS = [
     "topgrade-lms-1.onrender.com",
     "localhost"
     "127.0.0.1"
+]
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://topgrade-lms-1.onrender.com"
 ]
 
 
