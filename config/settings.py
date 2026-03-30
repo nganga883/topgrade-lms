@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-2re@)u1*$()*dmnaynlvcr@1*ta!$&416xun*x%%a&!&qy8&bu
 DEBUG = False
 
 ALLOWED_HOSTS = [
-    "https://topgrade-lms-1.onrender.com",
+    "topgrade-lms-1.onrender.com",
 ]
 
 CSRF_TRUSTED_ORIGINS = [
