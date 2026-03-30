@@ -1,0 +1,90 @@
+body {
+    font-family: Arial, sans-serif;
+    background: #f4f6f9;
+    padding: 20px;
+}
+
+.container {
+    max-width: 1000px;
+    margin: auto;
+}
+
+h1 {
+    color: #004080;
+    margin-bottom: 20px;
+}
+
+/* Search */
+.search-form {
+    display: flex;
+    margin-bottom: 20px;
+}
+
+.search-form input {
+    flex: 1;
+    padding: 8px;
+    border-radius: 5px 0 0 5px;
+    border: 1px solid #ccc;
+}
+
+.search-form button {
+    padding: 8px 12px;
+    border: none;
+    background-color: #004080;
+    color: white;
+    border-radius: 0 5px 5px 0;
+    cursor: pointer;
+}
+
+.search-form button:hover {
+    background-color: #003366;
+}
+
+/* Grid */
+.courses-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 20px;
+}
+
+/* Card */
+.course-card {
+    background: white;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    text-align: center;
+}
+
+.course-card h3 {
+    color: #004080;
+    margin-bottom: 5px;
+}
+
+.course-card span {
+    display: block;
+    margin-bottom: 10px;
+    color: #555;
+}
+
+/* Buttons */
+.enroll-btn {
+    background-color: #4CAF50;
+    color: white;
+    padding: 7px 12px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.enroll-btn:hover {
+    background-color: #45a049;
+}
+
+.enrolled-btn {
+    background-color: #ccc;
+    color: #555;
+    padding: 7px 12px;
+    border: none;
+    border-radius: 5px;
+}

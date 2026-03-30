@@ -23,14 +23,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-2re@)u1*$()*dmnaynlvcr@1*ta!$&416xun*x%%a&!&qy8&bu'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = [
-    "topgrade-lms-production.up.railway.app",
+    "https://topgrade-lms-1.onrender.com",
 ]
 
 CSRF_TRUSTED_ORIGINS = [
-    "htopgrade-lms-production.up.railway.app",
+    "https://topgrade-lms-1.onrender.com",
 ]
 
 
