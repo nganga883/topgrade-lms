@@ -35,6 +35,9 @@ CSRF_TRUSTED_ORIGINS = [
     "https://topgrade-lms-1.onrender.com",
 ]
 
+CSRF_COOKIE_SAMESITE = 'None'
+SESSION_COOKIE_SAMESITE = 'None'
+
 
 # Application definition
 
