@@ -1,0 +1,43 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Available Courses</title>
+    <link rel="stylesheet" href="{% static 'core/css/available_courses.css' %}">
+</head>
+<body>
+
+<div class="container">
+    <h1>Available Courses</h1>
+
+    <!-- Search -->
+    <form method="GET" class="search-form">
+        <input type="text" name="q" placeholder="Search courses..." value="{{ query }}">
+        <button type="submit">Search</button>
+    </form>
+
+    <!-- Course Grid -->
+    <div class="courses-grid">
+        {% for course in courses %}
+            <div class="course-card">
+                <h3>{{ course.name }}</h3>
+                <span>{{ course.code }}</span>
+
+                {% if course.id in enrolled_course_ids %}
+                    <button class="enrolled-btn" disabled>Enrolled</button>
+                {% else %}
+                    <a href="{% url 'enroll_course' course.id %}">
+                        <button class="enroll-btn">Enroll</button>
+                    </a>
+                {% endif %}
+            </div>
+        {% empty %}
+            <p>No courses available.</p>
+        {% endfor %}
+    </div>
+</div>
+
+<script src="{% static 'core/js/available_courses.js' %}"></script>
+</body>
+</html>

@@ -1,0 +1,264 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: #f4f7fb;
+    color: #1f2937;
+}
+
+.navbar {
+    background: linear-gradient(135deg, #0f172a, #1d4ed8);
+    color: white;
+    padding: 18px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.logo {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.nav-links {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: white;
+    font-weight: 600;
+}
+
+.logout-btn {
+    background: #dc2626;
+    padding: 10px 16px;
+    border-radius: 8px;
+}
+
+.page-container {
+    width: 94%;
+    max-width: 1350px;
+    margin: 30px auto;
+}
+
+.page-header {
+    background: white;
+    padding: 28px;
+    border-radius: 14px;
+    box-shadow: 0 5px 14px rgba(0, 0, 0, 0.07);
+    margin-bottom: 22px;
+}
+
+.page-header h1 {
+    color: #1d4ed8;
+    margin-bottom: 10px;
+    font-size: 30px;
+}
+
+.page-header p {
+    color: #4b5563;
+    line-height: 1.6;
+}
+
+.message-box {
+    background: #dcfce7;
+    color: #166534;
+    border-left: 5px solid #22c55e;
+    padding: 14px 16px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    font-weight: 600;
+}
+
+.table-card {
+    background: white;
+    border-radius: 14px;
+    box-shadow: 0 5px 14px rgba(0, 0, 0, 0.07);
+    padding: 24px;
+}
+
+.table-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 18px;
+    flex-wrap: wrap;
+}
+
+.table-top h2 {
+    color: #1e3a8a;
+}
+
+.table-top input {
+    padding: 11px 14px;
+    border: 1px solid #cbd5e1;
+    border-radius: 10px;
+    width: 300px;
+    max-width: 100%;
+    outline: none;
+}
+
+.table-top input:focus {
+    border-color: #2563eb;
+}
+
+.table-wrapper {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 950px;
+}
+
+table thead {
+    background: #eff6ff;
+}
+
+table th,
+table td {
+    text-align: left;
+    padding: 14px 12px;
+    border-bottom: 1px solid #e5e7eb;
+    vertical-align: middle;
+}
+
+table th {
+    color: #1e3a8a;
+    font-size: 15px;
+}
+
+table td {
+    color: #374151;
+    font-size: 14px;
+}
+
+.role-badge,
+.status-badge {
+    display: inline-block;
+    padding: 7px 12px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: capitalize;
+}
+
+.role-student {
+    background: #dbeafe;
+    color: #1d4ed8;
+}
+
+.role-lecturer {
+    background: #ede9fe;
+    color: #7c3aed;
+}
+
+.role-admin {
+    background: #fee2e2;
+    color: #dc2626;
+}
+
+.status-badge.active {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.status-badge.suspended {
+    background: #fee2e2;
+    color: #b91c1c;
+}
+
+.inline-form,
+.reset-form {
+    margin: 0;
+}
+
+.action-btn,
+.reset-btn {
+    border: none;
+    border-radius: 8px;
+    padding: 10px 14px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: 0.3s ease;
+}
+
+.suspend-btn {
+    background: #f59e0b;
+    color: white;
+}
+
+.suspend-btn:hover {
+    background: #d97706;
+}
+
+.activate-btn {
+    background: #16a34a;
+    color: white;
+}
+
+.activate-btn:hover {
+    background: #15803d;
+}
+
+.reset-form {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.reset-form input[type="password"] {
+    padding: 10px 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    outline: none;
+    min-width: 160px;
+}
+
+.reset-form input[type="password"]:focus {
+    border-color: #2563eb;
+}
+
+.reset-btn {
+    background: #2563eb;
+    color: white;
+}
+
+.reset-btn:hover {
+    background: #1e40af;
+}
+
+.empty-row {
+    text-align: center;
+    color: #6b7280;
+    padding: 20px;
+}
+
+@media (max-width: 768px) {
+    .navbar {
+        padding: 18px 20px;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .page-container {
+        width: 96%;
+    }
+
+    .page-header h1 {
+        font-size: 24px;
+    }
+}

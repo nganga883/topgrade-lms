@@ -1,0 +1,57 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lecturer Login - TOPGRADE LMS</title>
+    <link rel="stylesheet" href="{% static 'core/css/lecturer_login.css' %}">
+</head>
+<body>
+
+<div class="login-container">
+
+    <!-- Left side (branding) -->
+    <div class="login-left">
+        <h1>TOPGRADE LMS</h1>
+        <p>Lecturer Portal</p>
+        <p class="desc">
+            Upload course materials, manage your classes, and guide students effectively.
+        </p>
+    </div>
+
+    <!-- Right side (form) -->
+    <div class="login-right">
+
+        <h2>Lecturer Login</h2>
+
+        {% if message %}
+            <div class="message">{{ message }}</div>
+        {% endif %}
+
+        <form method="POST" id="lecturerLoginForm">
+            {% csrf_token %}
+
+            <label>Email</label>
+            <input type="email" name="email" placeholder="Enter your email" required>
+
+            <label>Password</label>
+            <div class="password-wrapper">
+                <input type="password" name="password" id="password" placeholder="Enter password" required>
+                <span id="togglePassword">👁️</span>
+            </div>
+
+            <button type="submit">Login</button>
+        </form>
+
+        <p class="note">
+            This login page is restricted to lecturers only.
+        </p>
+
+    </div>
+
+</div>
+
+<script src="{% static 'core/js/lecturer_login.js' %}"></script>
+</body>
+</html>

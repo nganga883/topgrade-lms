@@ -1,0 +1,68 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f6f9;
+    padding: 20px;
+}
+
+.container {
+    max-width: 1000px;
+    margin: auto;
+}
+
+h1 {
+    color: #004080;
+    margin-bottom: 20px;
+}
+
+/* Grid */
+.courses-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 20px;
+}
+
+/* Card */
+.course-card {
+    background: white;
+    border-radius: 10px;
+    padding: 15px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+/* Header */
+.course-header {
+    display: flex;
+    justify-content: space-between;
+    cursor: pointer;
+    color: #004080;
+}
+
+/* Materials */
+.course-materials {
+    display: none;
+    margin-top: 10px;
+}
+
+.course-materials.active {
+    display: block;
+}
+
+/* Material item */
+.material-item {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+}
+
+/* Button */
+.download-btn {
+    background-color: #004080;
+    color: white;
+    padding: 5px 8px;
+    border-radius: 5px;
+    text-decoration: none;
+}
+
+.download-btn:hover {
+    background-color: #003366;
+}

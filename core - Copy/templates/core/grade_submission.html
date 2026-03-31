@@ -1,0 +1,26 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grade Submission</title>
+    <link rel="stylesheet" href="{% static 'core/css/grade_submission.css' %}">
+</head>
+<body>
+    <div class="grade-wrapper">
+        <div class="grade-card">
+            <h1>Grade Submission</h1>
+            <p class="meta">Student: <strong>{{ submission.student.username }}</strong></p>
+            <p class="meta">Assignment: <strong>{{ submission.assignment.title }}</strong></p>
+
+            <form method="post" class="grade-form">
+                {% csrf_token %}
+                <label>Grade:</label>
+                <input type="text" name="grade" value="{{ submission.grade }}">
+                <button type="submit">Save Grade</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

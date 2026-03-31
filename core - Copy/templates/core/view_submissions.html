@@ -1,0 +1,32 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Submissions</title>
+    <link rel="stylesheet" href="{% static 'core/css/view_submissions.css' %}">
+</head>
+<body>
+    <div class="submissions-wrapper">
+        <div class="submissions-card">
+            <h2>Submissions</h2>
+            <p class="subtitle">Review student uploads and grade when ready.</p>
+
+            <div class="submissions-list">
+                {% for sub in submissions %}
+                    <div class="submission-row">
+                        <div class="student-name">{{ sub.student.username }}</div>
+                        <div class="submission-actions">
+                            <a href="{{ sub.file.url }}" class="btn light">Download</a>
+                            <a href="{% url 'grade_submission' sub.id %}" class="btn primary">Grade</a>
+                        </div>
+                    </div>
+                {% empty %}
+                    <p class="empty">No submissions yet.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</body>
+</html>

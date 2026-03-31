@@ -1,0 +1,153 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: "Poppins", "Trebuchet MS", "Segoe UI", sans-serif;
+    background: radial-gradient(1200px 500px at 10% 0%, #ffe8d9 0%, rgba(255, 232, 217, 0) 60%),
+                radial-gradient(900px 400px at 90% 20%, #e0f5f4 0%, rgba(224, 245, 244, 0) 55%),
+                #f5f3ee;
+    color: #0b1b2b;
+}
+
+.navbar {
+    width: 100%;
+    background: linear-gradient(135deg, #0f172a, #1e3a8a, #2563eb);
+    color: white;
+    padding: 18px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 10px 24px rgba(8, 18, 30, 0.2);
+}
+
+.logo {
+    font-size: 24px;
+    font-weight: bold;
+    letter-spacing: 0.4px;
+}
+
+.nav-right {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.admin-name {
+    font-size: 15px;
+    font-weight: 500;
+    opacity: 0.9;
+}
+
+.logout-btn {
+    text-decoration: none;
+    background: linear-gradient(120deg, #ff6b3d, #ff8c5f);
+    color: #0b1b2b;
+    padding: 10px 16px;
+    border-radius: 8px;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+.logout-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 16px rgba(255, 107, 61, 0.25);
+}
+
+.dashboard-container {
+    width: 90%;
+    max-width: 1150px;
+    margin: 40px auto;
+}
+
+.hero-section {
+    background: linear-gradient(140deg, #ffffff 0%, #f7f9ff 100%);
+    padding: 30px;
+    border-radius: 14px;
+    margin-bottom: 30px;
+    box-shadow: 0 12px 30px rgba(8, 18, 30, 0.12);
+    border: 1px solid rgba(12, 32, 56, 0.08);
+}
+
+.hero-section h1 {
+    font-size: 32px;
+    color: #0b1b2b;
+    margin-bottom: 10px;
+}
+
+.hero-section p {
+    font-size: 16px;
+    color: #2a3a4a;
+}
+
+.cards-section {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 25px;
+}
+
+.dashboard-card {
+    background: linear-gradient(140deg, #ffffff 0%, #f7f9ff 100%);
+    border-radius: 14px;
+    padding: 30px 25px;
+    box-shadow: 0 12px 30px rgba(8, 18, 30, 0.12);
+    border: 1px solid rgba(12, 32, 56, 0.08);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.dashboard-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 18px 34px rgba(12, 24, 44, 0.16);
+}
+
+.card-icon {
+    font-size: 40px;
+    margin-bottom: 15px;
+}
+
+.dashboard-card h2 {
+    font-size: 22px;
+    color: #0f2030;
+    margin-bottom: 12px;
+}
+
+.dashboard-card p {
+    font-size: 15px;
+    color: #2a3a4a;
+    line-height: 1.6;
+    margin-bottom: 20px;
+}
+
+.card-btn {
+    display: inline-block;
+    text-decoration: none;
+    background: linear-gradient(120deg, #5c7cff, #7aa6ff);
+    color: #0b1b2b;
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+.card-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 10px 18px rgba(92, 124, 255, 0.28);
+}
+
+@media (max-width: 768px) {
+    .navbar {
+        flex-direction: column;
+        gap: 12px;
+        text-align: center;
+    }
+
+    .nav-right {
+        flex-direction: column;
+    }
+
+    .hero-section h1 {
+        font-size: 26px;
+    }
+}

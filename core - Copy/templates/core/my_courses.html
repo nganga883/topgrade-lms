@@ -1,0 +1,48 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Courses</title>
+
+    <link rel="stylesheet" href="{% static 'core/css/my_courses.css' %}">
+</head>
+<body>
+
+<div class="container">
+    <h1>My Courses</h1>
+
+    <div class="courses-grid">
+        {% for course in courses %}
+            <div class="course-card">
+
+                <!-- Clickable header -->
+                <div class="course-header" onclick="toggleCourse(this)">
+                    <h3>{{ course.name }}</h3>
+                    <span>▼</span>
+                </div>
+
+                <!-- Materials -->
+                <div class="course-materials">
+                    {% for material in materials %}
+                        {% if material.course.id == course.id %}
+                            <div class="material-item">
+                                <span>{{ material.title }}</span>
+                                <a href="{{ material.file.url }}" class="download-btn">Download</a>
+                            </div>
+                        {% endif %}
+                    {% empty %}
+                        <p>No materials available</p>
+                    {% endfor %}
+                </div>
+
+            </div>
+        {% empty %}
+            <p>You are not enrolled in any courses.</p>
+        {% endfor %}
+    </div>
+</div>
+
+<script src="{% static 'core/js/my_courses.js' %}"></script>
+</body>
+</html>
