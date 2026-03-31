@@ -5,5 +5,6 @@ class CoreConfig(AppConfig):
     name = 'core'
 
     def ready(self):
-        from .signals import create_superuser
-        create_superuser()
+        #from .signals import create_superuser
+       # create_superuser()
+       pass
